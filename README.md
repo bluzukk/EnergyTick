@@ -12,7 +12,7 @@ Thanks to modernist ([modUI](https://github.com/obble/modui_classic))
 ## Installation
 
 * Download ([here](https://github.com/bluzukk/EnergyTick/archive/master.zip))
-* Unzips
+* Unzip
 * Rename folder to Energytick
 * Move folder to Interface/Addons/
 
