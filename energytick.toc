@@ -1,0 +1,7 @@
+## Interface: 11302
+## Title: Energy tick classic
+## Author: bluzukk, original author modernist (modUI)
+##SavedVariablesPerCharacter: alpha_fight, alpha_normal
+## Notes: shows next energy tick in energy bar
+
+unit/energy.lua
