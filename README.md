@@ -18,7 +18,9 @@ Thanks to modernist ([modUI](https://github.com/obble/modui_classic))
 
 ## Options
 
-* Alpha for the ticks can be set for in-fight and normal.
+* Visibility for the ticks can be set for in-fight and normal.
+* Visibility can be set with the interface options and commands.
+* Energy ticks can be hidden on full energy (not fully implemented)
 * Use /et for information ingame
 
 ### Examples
