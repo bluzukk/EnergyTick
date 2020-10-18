@@ -1,5 +1,5 @@
 ## Interface: 11302
-## Title: Energy tick classic
+## Title: Energytick classic
 ## Author: bluzukk
 ## SavedVariablesPerCharacter: alpha_fight, alpha_normal, disableOnMaxEnergy
 ## Notes: shows next energy tick in energy bar

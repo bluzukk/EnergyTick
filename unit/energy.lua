@@ -1,15 +1,15 @@
--- uthor: bluzukk
--- thanks to modernist (modUI)
--- https://github.com/obble/modui_classic
+-- author: bluzukk
+-- thanks to modernist (modUI, github.com/obble/modui_classic)
+
 
 local _, class = UnitClass('player')
-if not (class == 'ROGUE' or class == 'DRUID') then return end
+-- if not (class == 'ROGUE' or class == 'DRUID') then return end
 
 local last_tick  = GetTime()
 local last_value = 0
 
 local function UpdateAlpha(alpha)
-  PlayerFrameManaBar.energy.spark:SetAlpha(alpha)
+  PlayerFrameManaBar.mana.spark:SetAlpha(alpha)
 end
 
 local function AddonCommands(msg, editbox)
@@ -38,28 +38,23 @@ end
 SLASH_EnergytickOptions1, SLASH_EnergytickOptions2 = '/et', '/EnergytickOptions'
 SlashCmdList['EnergytickOptions'] = AddonCommands
 
-
 local function SetEnergyValue(self, value)
   local width = self:GetWidth()
   local type  = UnitPowerType('player')
 
   -- can be used for disabling if full energy
-  local energy = UnitPower('player')
-  local maxEnergy  = UnitPowerMax('player')
+  local energy    = UnitPower('player')
+  local maxEnergy = UnitPowerMax('player')
 
-  if type ~= Enum.PowerType.Energy then
-  -- for druids
-    self.energy.spark:Hide()
-  else
-    local position = ((width * value) / 2)
-    if (position < width) then
-      if (disableOnMaxEnergy and energy == maxEnergy) then
-        self.energy.spark:Hide()
-        return
-      end
-      self.energy.spark:SetPoint('CENTER', self, 'LEFT', position, 0)
-      self.energy.spark:Show()
-    end
+  -- if type == Enum.PowerType.Mana then
+  -- -- for druids
+  --   self.mana.spark:Hide()
+  -- else
+  local position = ((width * value) / 2)
+  if (position < width) then
+    self.mana.spark:SetPoint('CENTER', self, 'LEFT', position, 0)
+    self.mana.spark:Show()
+    -- end
   end
 end
 
@@ -69,7 +64,7 @@ local function UpdateEnergy(self, unit)
   local time  = GetTime()
   local v = time - last_tick
 
-  if energy > last_value or time >= last_tick + 2 then
+  if energy > last_value or time >= last_tick + 1.95 then -- should be +2 (seconds)
     last_tick = time
   end
 
@@ -79,45 +74,34 @@ end
 
 
 local function Init()
-  PlayerFrameManaBar.energy = CreateFrame('Statusbar', nil, PlayerFrameManaBar)
-  PlayerFrameManaBar.energy.spark = PlayerFrameManaBar.energy:CreateTexture(nil, 'OVERLAY')
-  PlayerFrameManaBar.energy.spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
-  PlayerFrameManaBar.energy.spark:SetSize(32, 32)
-  PlayerFrameManaBar.energy.spark:SetPoint('CENTER', PlayerFrameManaBar, 0, 0)
-  PlayerFrameManaBar.energy.spark:SetBlendMode('ADD')
-  PlayerFrameManaBar.energy.spark:SetAlpha(alpha_normal)
-  PlayerFrameManaBar.energy:RegisterEvent('UNIT_POWER_UPDATE')
-  PlayerFrameManaBar.energy:SetScript('OnUpdate', UpdateEnergy)
+  PlayerFrameManaBar.mana = CreateFrame('Statusbar', nil, PlayerFrameManaBar)
+  PlayerFrameManaBar.mana.spark = PlayerFrameManaBar.mana:CreateTexture(nil, 'OVERLAY')
+  PlayerFrameManaBar.mana.spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
+  PlayerFrameManaBar.mana.spark:SetSize(32, 32)
+  PlayerFrameManaBar.mana.spark:SetPoint('CENTER', PlayerFrameManaBar, 0, 0)
+  PlayerFrameManaBar.mana.spark:SetBlendMode('ADD')
+  PlayerFrameManaBar.mana.spark:SetAlpha(alpha_normal)
+  PlayerFrameManaBar.mana:RegisterEvent('UNIT_POWER_UPDATE')
+  PlayerFrameManaBar.mana:SetScript('OnUpdate', UpdateEnergy)
 end
 
 local function HandleEvent(self, event)
   if event == 'PLAYER_LOGIN' then
-  -- default values
+    print('KEKEKEKEEK Saved variables:')
+
     if alpha_fight == nil then
       alpha_fight = .8
+      print('Alpha fight  nil')
+    else
+      print('Alpha fight  ' .. alpha_fight)
     end
+
     if alpha_normal == nil then
       alpha_normal = .3
+      print('Alpha nil  ')
+    else
+      print('Alpha normal  ' .. alpha_normal)
     end
-    -- print('Saved variables:')
-    -- if (disableOnMaxEnergy == nil) then
-    --   disableOnMaxEnergy = false
-    -- else
-    --   self.CHECKBOX:SetChecked(disableOnMaxEnergy)
-    --   print(disableOnMaxEnergy)
-    -- end
-    --
-    -- if alpha_fight == nil then
-    --   alpha_fight = .8
-    -- else
-    --   print('Alpha fight  ' .. alpha_fight)
-    -- end
-    --
-    -- if alpha_normal == nil then
-    --   alpha_normal = .3
-    -- else
-    --   print('Alpha normal  ' .. alpha_normal)
-    -- end
   Init()
 
   elseif event == 'PLAYER_REGEN_DISABLED' then
@@ -163,20 +147,16 @@ local function createSlider(name, parent, low, high, label, description, stepsiz
 
   slider.label = parent:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
   slider.label:SetPoint('TOP', slider, 'BOTTOM', 0, 0)
-  -- slider.label:SetText(label)
-
   slider.minValue, slider.maxValue = slider:GetMinMaxValues()
   slider.textLow = _G[name..'Low']
   slider.textHigh = _G[name..'High']
   slider.text = _G[name..'Text']
   slider.textLow:SetText(slider.minValue)
   slider.textHigh:SetText(slider.maxValue)
-
   slider.value = slider:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')
   slider.value:SetPoint('BOTTOM', slider, 'TOP')
   slider.value:SetFontObject(GameFontNormalBig)
   slider.value:SetText(label)
-
   slider.tooltipText = label
   slider.tooltipRequirement = description
   return slider
@@ -185,17 +165,13 @@ end
 function createCheckbox(label, description, x, y, parent, checked, onClick)
   local checkbox = CreateFrame('CheckButton', nil, parent, 'InterfaceOptionsCheckButtonTemplate')
   checkbox:SetPoint('CENTER', x, y)
-
   checkbox.label = parent:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
   checkbox.label:SetPoint('LEFT', checkbox, 'RIGHT', 0, 0)
   checkbox.label:SetText(label)
-
   checkbox.tooltipText = label
   checkbox.tooltipRequirement = description
-
   checkbox:SetChecked(checked)
   checkbox:SetScript('OnClick', onClick)
-
   return checkbox
 end
 
@@ -219,7 +195,7 @@ SLIDER_NORMAL:SetScript(
   'OnValueChanged',
   function(self, value)
     alpha_normal = round(value/100, 2)
-    print(alpha_normal)
+    --print(alpha_normal)
     UpdateAlpha(alpha_normal)
     self.label:SetText(alpha_normal*100 .. ' %')
   end
@@ -232,8 +208,13 @@ SLIDER_FIGHT:SetScript(
   'OnValueChanged',
   function(self, value)
     alpha_fight = round(value/100, 2)
-    print(alpha_fight)
+    --print(alpha_fight)
     UpdateAlpha(alpha_fight)
     self.label:SetText(alpha_fight*100 .. ' %')
   end
 )
+
+EnergytickOptions.panel.refresh = function()
+	SLIDER_FIGHT:SetValue(alpha_fight*100)
+  SLIDER_NORMAL:SetValue(alpha_normal*100)
+end

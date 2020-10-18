@@ -13,13 +13,13 @@ Thanks to modernist ([modUI](https://github.com/obble/modui_classic))
 
 * Download ([here](https://github.com/bluzukk/EnergyTick/archive/master.zip))
 * Unzip
-* Rename folder to Energytick
-* Move folder to Interface/Addons/
+* Rename directory to Energytick
+* Move directory to Interface/Addons/
 
 ## Options
 
 * Visibility for the ticks can be set for in-fight and normal.
-* Visibility can be set with the interface options and commands.
+* Visibility can be set with the interface options or commands.
 * Energy ticks can be hidden on full energy (not fully implemented)
 * Use /et for information ingame
 
